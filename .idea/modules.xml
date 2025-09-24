@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/linked-list-template.iml" filepath="$PROJECT_DIR$/linked-list-template.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/java-coursework-template.iml" filepath="$PROJECT_DIR$/java-coursework-template.iml" />
+>>>>>>> 7c8c6edd7133a9f1c84274ba2c8c752df65c0424
     </modules>
   </component>
 </project>

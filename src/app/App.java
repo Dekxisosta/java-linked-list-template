@@ -1,8 +1,10 @@
 package app;
 
+import controller.*;
+import data.*;
+import datastructures.*;
 import dispatcher.ConsoleDispatcher;
-import ui.ConsolePrinter;
-import ui.ConsoleReader;
+import ui.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -34,15 +36,17 @@ public class App {
                 new BufferedReader(new InputStreamReader(System.in))
         );
         ConsolePrinter printer = new ConsolePrinter();
-        ConsoleDispatcher dispatcher = new ConsoleDispatcher(input, printer);
-        AppRunner runner = new AppRunner(dispatcher);
+        ListData data = new ListData(new LinkedList());
+        ListView view =  new ListView(printer);
+        ListController controller = new ListController(data, view);
+        ConsoleDispatcher dispatcher = new ConsoleDispatcher(input, printer, controller);
+
 
         try {
+            AppRunner runner = new AppRunner(dispatcher);
             runner.run();
         } catch (Exception e) {
-            System.err.println(
-                    "Unexpected error occurred while running App: " + e.getMessage()
-            );
+            System.err.println("Unexpected error occurred while running App: " + e.getMessage());
             e.printStackTrace(System.err);
         }
     }

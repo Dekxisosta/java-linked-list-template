@@ -1,11 +1,10 @@
 package dispatcher;
 
+import controller.*;
 import ui.ConsolePrinter;
 import ui.ConsoleReader;
 import ui.MenuOptions;
-import log.ConsoleLog;
-
-import java.awt.*;
+import util.Logger;
 
 /**
  * Dispatcher class that coordinates console input and output operations.
@@ -19,8 +18,12 @@ import java.awt.*;
 public class ConsoleDispatcher {
     /** Reads and validates user input from console */
     ConsoleReader input;
+
     /** Handles console output such as prompts and logs */
     ConsolePrinter printer;
+
+    /** Controls manipulation of list views */
+    ListController controller;
 
     /**
      * Dispatches actions based on the chosen menu index.
@@ -31,8 +34,31 @@ public class ConsoleDispatcher {
         switch(choice){
             case 0:
                 break;
+            case 1:
+                printer.ask("an integer");
+                controller.addLast(getInt());
+                break;
+            case 2:
+                controller.showList();
+                break;
+            case 3:
+                try{
+                    printer.ask("index");
+                    int index = getInt();
+
+                    printer.ask("data");
+                    int data = getInt();
+
+                    controller.setAtIndex(index, data);
+                }catch(Exception e){
+                    printer.log("Invalid index input", Logger.ERROR);
+                }
+                break;
+            case 4:
+                controller.removeLast();
+                break;
             default:
-                printer.log("No set action for index " + choice, ConsoleLog.DEBUG);
+                printer.log("No set action for index " + choice, Logger.DEBUG);
         }
     }
 
@@ -42,9 +68,10 @@ public class ConsoleDispatcher {
      * @param input   the {@link ConsoleReader} used for input
      * @param printer the {@link ConsolePrinter} used for output
      */
-    public ConsoleDispatcher(ConsoleReader input, ConsolePrinter printer){
+    public ConsoleDispatcher(ConsoleReader input, ConsolePrinter printer, ListController controller){
         this.input = input;
         this.printer = printer;
+        this.controller = controller;
     }
 
     /** Prints the program introduction. */
@@ -61,7 +88,7 @@ public class ConsoleDispatcher {
      * Prints the program's menu of options.
      */
     public void printMenuOptions(){
-        printer.printMenuOptions(MenuOptions.getMenuOptions());
+        printer.printMenuOptions(MenuOptions.getMenuOptions(), ">>> MAIN MENU OPTIONS >>>");
     }
 
     /**
@@ -89,9 +116,9 @@ public class ConsoleDispatcher {
      * Logs a message with a given type.
      *
      * @param message the message to log
-     * @param log     the {@link ConsoleLog} type (INFO, ERROR, DEBUG, etc.)
+     * @param log     the {@link Logger} type (INFO, ERROR, DEBUG, etc.)
      */
-    public void log(String message, ConsoleLog log){
+    public void log(String message, Logger log){
         printer.log(message, log);
     }
 
@@ -105,7 +132,7 @@ public class ConsoleDispatcher {
             try{
                 return input.readBoolean();
             }catch(Exception e){
-                printer.log(e.getMessage(), ConsoleLog.ERROR);
+                printer.log(e.getMessage(), Logger.ERROR);
                 printer.ask("(y/n)");
             }
         }
@@ -121,7 +148,7 @@ public class ConsoleDispatcher {
             try{
                 return input.readString();
             }catch(Exception e){
-                printer.log(e.getMessage(), ConsoleLog.ERROR);
+                printer.log(e.getMessage(), Logger.ERROR);
                 printer.ask("valid text");
             }
         }
@@ -137,7 +164,7 @@ public class ConsoleDispatcher {
             try{
                 return input.readInt();
             }catch(Exception e){
-                printer.log(e.getMessage(), ConsoleLog.ERROR);
+                printer.log(e.getMessage(), Logger.ERROR);
                 printer.ask("valid integer");
             }
         }
@@ -155,7 +182,7 @@ public class ConsoleDispatcher {
             try{
                 return input.readIntWithinRange(min, max);
             }catch(Exception e){
-                printer.log(e.getMessage(), ConsoleLog.ERROR);
+                printer.log(e.getMessage(), Logger.ERROR);
                 printer.ask("valid integer");
             }
         }
@@ -171,7 +198,7 @@ public class ConsoleDispatcher {
             try{
                 return input.readOption(MenuOptions.getMenuOptions());
             }catch(Exception e){
-                printer.log(e.getMessage(), ConsoleLog.ERROR);
+                printer.log(e.getMessage(), Logger.ERROR);
                 printer.ask("valid option");
             }
         }
